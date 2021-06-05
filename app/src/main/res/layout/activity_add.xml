@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:textColor="#000"/>
 
-    <EditText
+    <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="운동 이름을 입력해주세요."

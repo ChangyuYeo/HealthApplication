@@ -1,18 +1,33 @@
 package com.example.health;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class addActivity extends Activity {
     Button btnBack, btnReturn;
-    EditText edtTitle, edtSet, edtNum;
+    EditText edtSet, edtNum;
+    String [] itmes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,10 +36,24 @@ public class addActivity extends Activity {
 
         btnBack = (Button) findViewById (R.id.btn_back);
         btnReturn = (Button) findViewById (R.id.btn_return);
-
-        edtTitle = (EditText) findViewById (R.id.edt_title);
         edtSet = (EditText) findViewById (R.id.edt_set);
         edtNum = (EditText) findViewById (R.id.edt_num);
+
+        final AutoCompleteTextView edtTitle = (AutoCompleteTextView) findViewById(R.id.edt_title);
+
+        // 텍스트 자동완성
+        try {
+            InputStream inputS = getResources().openRawResource(R.raw.text_list);
+            byte[] txt = new byte[inputS.available()];
+            inputS.read(txt);
+            String list = new String(txt);
+            itmes = list.split("\n");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, itmes);
+            edtTitle.setAdapter(adapter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // MainActivity로 값 넘겨주기
         btnReturn.setOnClickListener(new View.OnClickListener() {
@@ -40,7 +69,6 @@ public class addActivity extends Activity {
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                 }
-
             }
         });
 

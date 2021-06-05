@@ -14,18 +14,25 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends Activity {
 
     Button startBtn, stopBtn, endBtn, btnCal, btnMain, addBtn;
+    ListView listView;
+    ArrayList<String> list = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
 
     private Chronometer chronometer;
     private boolean running;
@@ -42,12 +49,17 @@ public class MainActivity extends Activity {
         addBtn = (Button) findViewById(R.id.add_btn);
         btnMain = (Button) findViewById(R.id.btnMain);
         btnCal = (Button) findViewById(R.id.btnCal);
+        listView = (ListView) findViewById(R.id.listView);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, list);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setAdapter(adapter);
 
         chronometer = findViewById(R.id.chronometer);
         chronometer.setFormat("%s");
 
         // 현재 날짜 구하기
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
 
         Date date = new Date();
         String timeDay = simpleDateFormat.format(date);
@@ -139,13 +151,41 @@ public class MainActivity extends Activity {
         });
     }
 
-    // addActivity에서 값 가져오기
+    // addActivity 에서 값 가져오기
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
             String INPUT_TITLE = data.getStringExtra("INPUT_TITLE");
             String INPUT_SET = data.getStringExtra("INPUT_SET");
             String INPUT_NUM = data.getStringExtra("INPUT_NUM");
+
+            list.add("운동종목 : " + INPUT_TITLE + "\n" + "세트 : " + INPUT_SET + "          " + "횟수 : " + INPUT_NUM);
+            adapter.notifyDataSetChanged();
+            listView.clearChoices();
+
+            if(adapter.getCount() > 5){
+                View item = adapter.getView(0, null, listView);
+                item.measure(0, 0);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (5.5 * item.getMeasuredHeight()));
+                listView.setLayoutParams(params);
+            }
+
+            TextView tv1 = (TextView) findViewById(R.id.tv1);
+            Button btnDel = (Button) findViewById(R.id.btn_del);
+            tv1.setVisibility(View.GONE);
+            btnDel.setVisibility(View.VISIBLE);
+
+            // 리스트 선택해서 삭제하는 리스너
+            btnDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 선택된 항목 인덱스 가져오기
+                    int pos = listView.getCheckedItemPosition();
+                    list.remove(pos);
+                    adapter.notifyDataSetChanged();
+                    listView.clearChoices();
+                }
+            });
         }
     }
 }

@@ -7,10 +7,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2000-00-00"
+        android:text="2000년 00월 00일"
         android:textSize="25dp"
         android:gravity="center"
-        android:layout_margin="35dp"
+        android:layout_margin="30dp"
         android:textColor="#000"
         android:id="@+id/tv_day" />
 
@@ -77,9 +77,27 @@
         android:paddingTop="30dp"
         android:id="@+id/add_btn" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="운동을 추가해주세요!"
+        android:layout_gravity="center"
+        android:id="@+id/tv1"
+        android:layout_margin="50dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제하기"
+        android:layout_gravity="right"
+        android:id="@+id/btn_del"
+        android:background="#00FFFFFF"
+        android:visibility="gone" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:id="@+id/listView"  />
 
     <LinearLayout
