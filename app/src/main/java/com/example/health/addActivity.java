@@ -40,6 +40,7 @@ public class addActivity extends Activity {
         edtNum = (EditText) findViewById (R.id.edt_num);
 
         final AutoCompleteTextView edtTitle = (AutoCompleteTextView) findViewById(R.id.edt_title);
+        edtTitle.setThreshold(1);
 
         // 텍스트 자동완성
         try {

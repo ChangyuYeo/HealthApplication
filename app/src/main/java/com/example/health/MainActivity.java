@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -159,7 +160,7 @@ public class MainActivity extends Activity {
             String INPUT_SET = data.getStringExtra("INPUT_SET");
             String INPUT_NUM = data.getStringExtra("INPUT_NUM");
 
-            list.add("운동종목 : " + INPUT_TITLE + "\n" + "세트 : " + INPUT_SET + "          " + "횟수 : " + INPUT_NUM);
+            list.add(INPUT_TITLE + "\n" + INPUT_SET + " set" + "          " + INPUT_NUM + " reps");
             adapter.notifyDataSetChanged();
             listView.clearChoices();
 
@@ -170,8 +171,8 @@ public class MainActivity extends Activity {
                 listView.setLayoutParams(params);
             }
 
-            TextView tv1 = (TextView) findViewById(R.id.tv1);
-            Button btnDel = (Button) findViewById(R.id.btn_del);
+            final TextView tv1 = (TextView) findViewById(R.id.tv1);
+            final Button btnDel = (Button) findViewById(R.id.btn_del);
             tv1.setVisibility(View.GONE);
             btnDel.setVisibility(View.VISIBLE);
 
@@ -179,11 +180,20 @@ public class MainActivity extends Activity {
             btnDel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 선택된 항목 인덱스 가져오기
-                    int pos = listView.getCheckedItemPosition();
-                    list.remove(pos);
-                    adapter.notifyDataSetChanged();
-                    listView.clearChoices();
+                    try {
+                        // 선택된 항목 인덱스 가져오기
+                        int pos = listView.getCheckedItemPosition();
+                        list.remove(pos);
+                        adapter.notifyDataSetChanged();
+                        listView.clearChoices();
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "선택된 항목이 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    // 삭제하기 눌렀는데 리스트에 아무것도 없었을 때
+                    if (adapter.getCount() == 0) {
+                        tv1.setVisibility(View.VISIBLE);
+                        btnDel.setVisibility(View.GONE);
+                    }
                 }
             });
         }
