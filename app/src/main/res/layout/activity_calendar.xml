@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <CalendarView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cal" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="내용 입니다."
-        android:layout_marginLeft="30dp"
-        android:layout_marginBottom="20dp"
-        android:textColor="#000"
-        android:textSize="15dp"
-        android:id="@+id/cal_title" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="내용 입니다."
-        android:layout_marginLeft="30dp"
-        android:textColor="#000"
-        android:textSize="15dp"
-        android:id="@+id/cal_content" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <CalendarView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="#000"
+            android:textSize="20dp"
+            android:id="@+id/cal_title" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="text"
+                android:layout_marginLeft="30dp"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:id="@+id/cal_content" />
+
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="9"
         android:orientation="horizontal"
         android:gravity="bottom" >
 

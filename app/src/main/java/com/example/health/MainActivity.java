@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
 
@@ -65,19 +66,13 @@ public class MainActivity extends Activity {
         calculator.setFormat("%s");
 
         // 현재 날짜 구하기
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
-
-        Date date = new Date();
-        String timeDay = simpleDateFormat.format(date);
-
-        TextView tvDay = (TextView) findViewById(R.id.tv_day);
-        tvDay.setText(timeDay);
-// -------------------------------------------
         final String fileName;
         Calendar cal = Calendar.getInstance();
         int cYear = cal.get(Calendar.YEAR);
         int cMonth = cal.get(Calendar.MONTH);
         int cDay = cal.get(Calendar.DAY_OF_MONTH);
+        TextView tvDay = (TextView) findViewById(R.id.tv_day);
+        tvDay.setText(cYear +"년 " + (cMonth + 1) +"월 " + (cDay) + "일");
 
         fileName = Integer.toString(cYear) + "_" + Integer.toString(cMonth + 1) + "_"  + Integer.toString(cDay) + ".txt";
 
@@ -130,7 +125,13 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         long end = System.currentTimeMillis();
-                        String time = String.valueOf((int) (end - start)/1000);
+                        // 스톱워치의 시간을 계산해서 변수에 담는다
+                        long milliseconds = end - start;
+                        long hours = (milliseconds / 1000) / 60 / 60 % 24;
+                        long minutes = (milliseconds / 1000) / 60 % 60;
+                        long seconds = (milliseconds / 1000) % 60;
+                        String time = String.format("%02d시간 %02d분 %02d초 진행하였습니다", hours, minutes, seconds);
+
                         calculator.stop();
                         calculator.setBase(SystemClock.elapsedRealtime());
                         running = false;
@@ -144,7 +145,7 @@ public class MainActivity extends Activity {
                         // 기록 저장
                         try {
                             FileOutputStream outFs = openFileOutput(fileName, Context.MODE_PRIVATE);
-                            String str = list.toString() + time;
+                            String str = time + "\n\n" + list.toString();
                             outFs.write(str.getBytes());
                             Toast.makeText(getApplicationContext(), "운동을 기록 합니다!", Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {   }
@@ -188,8 +189,8 @@ public class MainActivity extends Activity {
             String INPUT_SET = data.getStringExtra("INPUT_SET");
             String INPUT_NUM = data.getStringExtra("INPUT_NUM");
 
-            list.add(INPUT_TITLE + "\n" + INPUT_SET + "set" + "  /  " + INPUT_NUM + "reps");
-            // list.add(INPUT_TITLE + "        " + INPUT_SET + "set" + "        " + INPUT_NUM + "reps");
+            list.add(INPUT_TITLE + "\n" + INPUT_SET + "set" + "  /  " + INPUT_NUM + "reps" + "\n");
+            //list.add(INPUT_TITLE + "        " + INPUT_SET + "set" + "        " + INPUT_NUM + "reps" + "\n");
             adapter.notifyDataSetChanged();
             listView.clearChoices();
 
