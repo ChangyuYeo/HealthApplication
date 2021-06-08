@@ -8,6 +8,25 @@
         android:layout_height="wrap_content"
         android:id="@+id/cal" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="내용 입니다."
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000"
+        android:textSize="15dp"
+        android:id="@+id/cal_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="내용 입니다."
+        android:layout_marginLeft="30dp"
+        android:textColor="#000"
+        android:textSize="15dp"
+        android:id="@+id/cal_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

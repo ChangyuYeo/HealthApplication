@@ -3,7 +3,9 @@ package com.example.health;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,8 +37,9 @@ public class MainActivity extends Activity {
     ListView listView;
     ArrayList<String> list = new ArrayList<String>();
     ArrayAdapter<String> adapter;
+    // 스톱워치 계산을 위한 시작 변수 선언
+    long start;
 
-    private Chronometer chronometer;
     private boolean running;
     private long pauseOffset;
 
@@ -55,9 +59,10 @@ public class MainActivity extends Activity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, list);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setAdapter(adapter);
-
-        chronometer = findViewById(R.id.chronometer);
-        chronometer.setFormat("%s");
+        
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final Chronometer calculator = (Chronometer)findViewById(R.id.chronometer);
+        calculator.setFormat("%s");
 
         // 현재 날짜 구하기
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
@@ -67,18 +72,33 @@ public class MainActivity extends Activity {
 
         TextView tvDay = (TextView) findViewById(R.id.tv_day);
         tvDay.setText(timeDay);
+// -------------------------------------------
+        final String fileName;
+        Calendar cal = Calendar.getInstance();
+        int cYear = cal.get(Calendar.YEAR);
+        int cMonth = cal.get(Calendar.MONTH);
+        int cDay = cal.get(Calendar.DAY_OF_MONTH);
+
+        fileName = Integer.toString(cYear) + "_" + Integer.toString(cMonth + 1) + "_"  + Integer.toString(cDay) + ".txt";
 
         // 운동시작
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!running) {
-                    chronometer.setBase(SystemClock.elapsedRealtime()-pauseOffset);
-                    chronometer.start();
-                    running = true;
-                    startBtn.setVisibility(View.GONE);
-                    stopBtn.setVisibility(View.VISIBLE);
-                    endBtn.setVisibility(View.VISIBLE);
+                // 리스트 뷰가 비어있을때
+                if (list.toString().equals("[]")) {
+                    Toast.makeText(getApplicationContext(), "먼저 오늘의 운동을 추가해주세요!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (!running) {
+                        // 스톱워치 계산을 위한 시작 변수 선언
+                        start = System.currentTimeMillis();
+                        calculator.setBase(SystemClock.elapsedRealtime()-pauseOffset);
+                        calculator.start();
+                        running = true;
+                        startBtn.setVisibility(View.GONE);
+                        stopBtn.setVisibility(View.VISIBLE);
+                        endBtn.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -88,8 +108,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (running) {
-                    chronometer.stop();
-                    pauseOffset = SystemClock.elapsedRealtime()-chronometer.getBase();
+                    calculator.stop();
+                    pauseOffset = SystemClock.elapsedRealtime()-calculator.getBase();
                     running = false;
                     startBtn.setVisibility(View.VISIBLE);
                     stopBtn.setVisibility(View.GONE);
@@ -106,13 +126,13 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("수고하셨습니다!").setMessage("운동을 끝낼까요?");
-
-                builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("예" , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getApplicationContext(), "운동을 기록 합니다!", Toast.LENGTH_SHORT).show();
-                        chronometer.stop();
-                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        long end = System.currentTimeMillis();
+                        String time = String.valueOf((int) (end - start)/1000);
+                        calculator.stop();
+                        calculator.setBase(SystemClock.elapsedRealtime());
                         running = false;
                         startBtn.setVisibility(View.VISIBLE);
                         stopBtn.setVisibility(View.GONE);
@@ -120,6 +140,14 @@ public class MainActivity extends Activity {
                         startBtn.setText("운동시작");
                         startBtn.setTextColor(Color.parseColor("#673AB7"));
                         startBtn.setTextSize(25);
+
+                        // 기록 저장
+                        try {
+                            FileOutputStream outFs = openFileOutput(fileName, Context.MODE_PRIVATE);
+                            String str = list.toString() + time;
+                            outFs.write(str.getBytes());
+                            Toast.makeText(getApplicationContext(), "운동을 기록 합니다!", Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {   }
                     }
                 });
 
@@ -160,11 +188,13 @@ public class MainActivity extends Activity {
             String INPUT_SET = data.getStringExtra("INPUT_SET");
             String INPUT_NUM = data.getStringExtra("INPUT_NUM");
 
-            list.add(INPUT_TITLE + "\n" + INPUT_SET + " set" + "          " + INPUT_NUM + " reps");
+            list.add(INPUT_TITLE + "\n" + INPUT_SET + "set" + "  /  " + INPUT_NUM + "reps");
+            // list.add(INPUT_TITLE + "        " + INPUT_SET + "set" + "        " + INPUT_NUM + "reps");
             adapter.notifyDataSetChanged();
             listView.clearChoices();
 
-            if(adapter.getCount() > 5){
+            // 리스트뷰의 아이템이 5개가 넘었을 때,
+            if(adapter.getCount() > 5) {
                 View item = adapter.getView(0, null, listView);
                 item.measure(0, 0);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (5.5 * item.getMeasuredHeight()));
