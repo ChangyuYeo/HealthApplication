@@ -49,7 +49,7 @@ public class CalendarActivity extends Activity {
                     calContent.setText(str);
                     inputS.close();
                 } catch (IOException e) {
-                    calContent.setText("기록이 없습니다");
+                    calContent.setText("기록이 없습니다 :(");
                 }
             }
         });
