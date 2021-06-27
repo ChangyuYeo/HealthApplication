@@ -7,14 +7,14 @@
 2. 기록탭에서 달력을 이용해 날짜별로 그날의 기록을 볼 수 있다. 
 <br><br>
 ### 앱 화면 스크린샷 👀
-<br>
-<img width="250" src="./README/Health_Application.png" alt="미리보기">
-<img width="250" src="./README/Health_Application2.png" alt="미리보기">
+<br><br>
+<img width="300" src="./README/Health_Application.png" alt="미리보기">
+<img width="300" src="./README/Health_Application2.png" alt="미리보기">
 
 <br><br>
-<img width="250" src="./README/Health_Application3.png" alt="미리보기">
-<img width="250" src="./README/Health_Application4.png" alt="미리보기">
+<img width="300" src="./README/Health_Application3.png" alt="미리보기">
+<img width="300" src="./README/Health_Application4.png" alt="미리보기">
 
 <br><br>
-<img width="250" src="./README/Health_Application5.png" alt="미리보기">
-<img width="250" src="./README/Health_Application6.png" alt="미리보기">
+<img width="300" src="./README/Health_Application5.png" alt="미리보기">
+<img width="300" src="./README/Health_Application6.png" alt="미리보기">
